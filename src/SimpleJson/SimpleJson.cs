@@ -33,7 +33,7 @@
 
 // NOTE: uncomment the following line to use Reflection.Emit (better performance) instead of method.invoke().
 // don't enable ReflectionEmit for WinRT, Silverlight and WP7.
-//#define SIMPLE_JSON_REFLECTIONEMIT
+// #define SIMPLE_JSON_REFLECTIONEMIT
 
 // NOTE: uncomment the following line if you are compiling under Window Metro style application/library.
 // usually already defined in properties
@@ -1035,14 +1035,19 @@ namespace SimpleJson
                 success = SerializeString((string)value, builder);
             else if (value is IDictionary<string, object>)
             {
-                IDictionary<string, object> dict = (IDictionary<string, object>)value;
+				IDictionary<string, object> dict = value as IDictionary<string, object>;
                 success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder);
             }
             else if (value is IDictionary<string, string>)
             {
-                IDictionary<string, string> dict = (IDictionary<string, string>)value;
+				IDictionary<string, string> dict = value as IDictionary<string, string>;
                 success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder);
             }
+			else if (value is IDictionary)
+			{
+				var dict = value as IDictionary;
+				success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder);								
+			}
             else if (value is IEnumerable)
                 success = SerializeArray(jsonSerializerStrategy, (IEnumerable)value, builder);
             else if (IsNumeric(value))
